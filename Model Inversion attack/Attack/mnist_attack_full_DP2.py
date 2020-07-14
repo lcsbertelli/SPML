@@ -89,7 +89,7 @@ def training(noise):
     # print("in main",train_data)
     #modelName = "Mnistmodel"+str(noise)+".h5"
     modelName = "Mnistmodel"+str(noise)+".h5"
-    model = load_model("mnistfullhw/"+modelName)
+    model = load_model("../Models/Native/"+modelName)
     start_time = time.time()
 
     if FLAGS.dpsgd:
@@ -130,7 +130,7 @@ def main(unused_argv):
   print("We are using Tensorflow version", tf.__version__)
   print("Keras API version: {}".format(K.__version__))
   #for i in [30,3.5,1.90,1.15,.920,.810]:
-  for i in [.810]:
+  for i in [1.90]:
     for iteration in range(1,2):
         print("=====================Iteration==========================",iteration)
         training(i)

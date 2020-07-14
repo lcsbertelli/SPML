@@ -87,7 +87,7 @@ def training(noise):
     # print("in main",train_data)
     #modelName = "Mnistmodel"+str(noise)+".h5"
     modelName = "Mnistmodelnative.h5"
-    model = load_model(""+modelName)
+    model = load_model("../Models/Native/"+modelName)
     start_time = time.time()
 
     if FLAGS.dpsgd:

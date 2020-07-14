@@ -30,7 +30,6 @@ from tensorflow_privacy.privacy.analysis.rdp_accountant import compute_rdp
 from tensorflow_privacy.privacy.analysis.rdp_accountant import get_privacy_spent
 from tensorflow_privacy.privacy.optimizers.dp_optimizer import DPGradientDescentGaussianOptimizer
 import time
-from keras.models import load_model
 
 GradientDescentOptimizer = tf.train.GradientDescentOptimizer
 
@@ -38,18 +37,34 @@ flags.DEFINE_boolean(
     'dpsgd', True, 'If True, train with DP-SGD. If False, '
     'train with vanilla SGD.')
 flags.DEFINE_float('learning_rate', 0.25, 'Learning rate for training')
-flags.DEFINE_float('delta', 0.0001, 'Learning rate for training')
-flags.DEFINE_integer('size', 10000, 'subset for training')
+flags.DEFINE_float('delta', 0.000001, 'Learning rate for training')
+flags.DEFINE_integer('size', 60000, 'subset for training')
 #flags.DEFINE_float('noise_multiplier',1.193,'Ratio of the standard deviation to the clipping norm')
 flags.DEFINE_float('l2_norm_clip', 1.0, 'Clipping norm')
 flags.DEFINE_integer('batch_size', 500, 'Batch size')
-flags.DEFINE_integer('epochs', 5, 'Number of epochs')
+flags.DEFINE_integer('epochs', 50, 'Number of epochs')
 flags.DEFINE_integer(
     'microbatches', 20, 'Number of microbatches '
     '(must evenly divide batch_size)')
 flags.DEFINE_string('model_dir', None, 'Model directory')
+flags.DEFINE_integer('accuracy', 0, 'Accuracy')
+
 
 FLAGS = flags.FLAGS
+
+def compute_epsilon(steps,noise):
+  """Computes epsilon value for given hyperparameters."""
+  if noise == 0.0:
+    return float('inf')
+  orders = [1 + x / 10. for x in range(1, 100)] + list(range(12, 64))
+  sampling_probability = FLAGS.batch_size / FLAGS.size
+  rdp = compute_rdp(q=sampling_probability,
+                    noise_multiplier=noise,
+                    steps=steps,
+                    orders=orders)
+  # Delta is set to 1e-5 because MNIST has 60000 training points.
+  return get_privacy_spent(orders, rdp, target_delta=FLAGS.delta)[0]
+
 
 def load_mnist(noise):
   """Loads MNIST and preprocesses to combine training and validation data."""
@@ -57,14 +72,14 @@ def load_mnist(noise):
   train_data, train_labels = train
   test_data, test_labels = test
 
-  train_data = np.array(train_data[:FLAGS.size], dtype=np.float32) / 255
-  test_data = np.array(test_data[:FLAGS.size], dtype=np.float32) / 255
+  train_data = np.array(train_data, dtype=np.float32) / 255
+  test_data = np.array(test_data, dtype=np.float32) / 255
   train_data = train_data.reshape(train_data.shape[0], 28, 28, 1)
 
   test_data = test_data.reshape(test_data.shape[0], 28, 28, 1)
 
-  train_labels = np.array(train_labels[:FLAGS.size], dtype=np.int32)
-  test_labels = np.array(test_labels[:FLAGS.size], dtype=np.int32)
+  train_labels = np.array(train_labels, dtype=np.int32)
+  test_labels = np.array(test_labels, dtype=np.int32)
 
   train_labels = K.utils.to_categorical(train_labels, num_classes=10)
   test_labels = K.utils.to_categorical(test_labels, num_classes=10)
@@ -77,7 +92,10 @@ def load_mnist(noise):
   return train_data, train_labels,test_data,test_labels
 
 def training(noise):
+    eps = compute_epsilon(FLAGS.epochs * FLAGS.size // FLAGS.batch_size,noise)
+    print('For delta=%4f, the current epsilon is: %.4f' % (FLAGS.delta,eps))
     print("Noise Mutiplier",noise)
+    start_time = time.time()
     logging.set_verbosity(logging.INFO)
     if FLAGS.dpsgd and FLAGS.batch_size % FLAGS.microbatches != 0:
         raise ValueError('Number of microbatches should divide evenly batch_size')
@@ -85,10 +103,25 @@ def training(noise):
     # Load training and test data.
     train_data, train_labels, test_data, test_labels = load_mnist(noise)
     # print("in main",train_data)
-    modelName = "Mnistmodel"+str(noise)+".h5"
-    #modelName = "Mnistmodelnative.h5"
-    model = load_model("mnistfspf/"+modelName)
     start_time = time.time()
+
+    # Define a sequential Keras model
+    model = K.Sequential([
+        K.layers.Conv2D(16, 8,
+                        strides=2,
+                        padding='same',
+                        activation='relu',
+                        input_shape=(28, 28, 1)),
+        K.layers.MaxPool2D(2, 1),
+        K.layers.Conv2D(32, 4,
+                        strides=2,
+                        padding='valid',
+                        activation='relu'),
+        K.layers.MaxPool2D(2, 1),
+        K.layers.Flatten(),
+        K.layers.Dense(32, activation='relu'),
+        K.layers.Dense(10)
+    ])
 
     if FLAGS.dpsgd:
         optimizer = DPGradientDescentGaussianOptimizer(
@@ -106,25 +139,39 @@ def training(noise):
         # print("loss=", loss)
     # Compile model with Keras
     model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
-    print('\n# Evaluate on test data')
-    results = model.evaluate(test_data, test_labels, batch_size=FLAGS.batch_size)
-    #print('test loss, test acc:', results)
-    print("Accuracy:",results[1]*100)
+
+    # Train model with Keras
+    history = model.fit(train_data, train_labels,
+                        epochs=FLAGS.epochs,
+                        validation_data=(test_data, test_labels),
+                        batch_size=FLAGS.batch_size)
     print("Latency --- %s seconds ---" % (time.time() - start_time))
     # Compute the privacy budget expended.
     if FLAGS.dpsgd:
-        print('trained with DP')
+        eps = compute_epsilon(FLAGS.epochs * FLAGS.size // FLAGS.batch_size,noise)
+        print('For delta=%4f, the current epsilon is: %.4f' % (FLAGS.delta, eps))
     else:
         print('Trained with vanilla non-private SGD optimizer')
+
+    acc = history.history['accuracy'][4]
+    print(acc)
+    if (acc > FLAGS.accuracy):
+        print("Saving accuracy as previous accuracy was {} and present is {}".format(FLAGS.accuracy, acc))
+        modelName = "Mnistmodel" + str(noise) + ".h5"
+        model.save(modelName)
+        FLAGS.accuracy = acc
+        print("Saved model to disk")
+
 
 
 def main(unused_argv):
   print("We are using Tensorflow version", tf.__version__)
   print("Keras API version: {}".format(K.__version__))
-  #for i in [30,2.35,1.49,1,.830,.729]:
-  for i in [2.35]:
+  #for i in [30,3.5,1.90,1.15,.920,.810]:
+  for i in [.810]:
+#for i in [30]:
     for iteration in range(1,2):
-        #print("=====================Iteration==========================",iteration)
+        print("=====================Iteration==========================",iteration)
         training(i)
 
 if __name__ == '__main__':

@@ -31,7 +31,9 @@ from tensorflow_privacy.privacy.analysis.rdp_accountant import get_privacy_spent
 from tensorflow_privacy.privacy.optimizers.dp_optimizer import DPGradientDescentGaussianOptimizer
 import time
 from keras.models import load_model
-
+from keras.preprocessing.image import img_to_array
+from art.estimators.classification import KerasClassifier
+from art.attacks.inference import MIFace
 GradientDescentOptimizer = tf.train.GradientDescentOptimizer
 
 flags.DEFINE_boolean(
@@ -39,11 +41,11 @@ flags.DEFINE_boolean(
     'train with vanilla SGD.')
 flags.DEFINE_float('learning_rate', 0.25, 'Learning rate for training')
 flags.DEFINE_float('delta', 0.0001, 'Learning rate for training')
-flags.DEFINE_integer('size', 10000, 'subset for training')
+flags.DEFINE_integer('size', 60000, 'subset for training')
 #flags.DEFINE_float('noise_multiplier',1.193,'Ratio of the standard deviation to the clipping norm')
 flags.DEFINE_float('l2_norm_clip', 1.0, 'Clipping norm')
 flags.DEFINE_integer('batch_size', 500, 'Batch size')
-flags.DEFINE_integer('epochs', 5, 'Number of epochs')
+flags.DEFINE_integer('epochs', 50, 'Number of epochs')
 flags.DEFINE_integer(
     'microbatches', 20, 'Number of microbatches '
     '(must evenly divide batch_size)')
@@ -85,9 +87,9 @@ def training(noise):
     # Load training and test data.
     train_data, train_labels, test_data, test_labels = load_mnist(noise)
     # print("in main",train_data)
+    #modelName = "Mnistmodel"+str(noise)+".h5"
     modelName = "Mnistmodel"+str(noise)+".h5"
-    #modelName = "Mnistmodelnative.h5"
-    model = load_model("mnistfspf/"+modelName)
+    model = load_model("../Models/Native/"+modelName)
     start_time = time.time()
 
     if FLAGS.dpsgd:
@@ -105,26 +107,32 @@ def training(noise):
         loss = K.losses.CategoricalCrossentropy(from_logits=True, )
         # print("loss=", loss)
     # Compile model with Keras
-    model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
-    print('\n# Evaluate on test data')
-    results = model.evaluate(test_data, test_labels, batch_size=FLAGS.batch_size)
-    #print('test loss, test acc:', results)
-    print("Accuracy:",results[1]*100)
+    model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+    classifier = KerasClassifier(model=model, clip_values=(0, 1), use_logits=True)
+    attack = MIFace(classifier, max_iter=10000, threshold=1.)
+    y = np.arange(10)
+    x_init_average = np.zeros((10, 28, 28, 1)) + np.mean(test_data, axis=0)
+    x_infer_from_average = attack.infer(x_init_average, y)
+    plt.figure(figsize=(15, 15))
+    for i in range(10):
+        plt.subplot(5, 5, i + 1)
+        plt.imshow((np.reshape(x_infer_from_average[0 + i,], (28, 28))), cmap=plt.cm.gray_r)
+
+    plt.savefig("Mnistattack"+str(noise)+".pdf")
+    plt.show()
     print("Latency --- %s seconds ---" % (time.time() - start_time))
-    # Compute the privacy budget expended.
     if FLAGS.dpsgd:
         print('trained with DP')
     else:
         print('Trained with vanilla non-private SGD optimizer')
 
-
 def main(unused_argv):
   print("We are using Tensorflow version", tf.__version__)
   print("Keras API version: {}".format(K.__version__))
-  #for i in [30,2.35,1.49,1,.830,.729]:
-  for i in [.830]:
+  #for i in [30,3.5,1.90,1.15,.920,.810]:
+  for i in [.920]:
     for iteration in range(1,2):
-        #print("=====================Iteration==========================",iteration)
+        print("=====================Iteration==========================",iteration)
         training(i)
 
 if __name__ == '__main__':
