@@ -26,7 +26,3 @@ In SPML directory three directories are available
 1. mnist - SPML implementation with mnist dataset 
 2. cifar10 - SPML implementation with cifar10 dataset 
 3. rr - SPML implementation with randomized response 
-
-
-# SPML
-# SPML
