@@ -13,7 +13,7 @@ This will give us the trained model which can be feed for the inference later.
 ## SPML+native TensorFlow - Inference
 To run SPML+native TensorFlow for inference we can use the following command:
 ```
-python3 mnist_inference_native.py
+python3 mnist_nativeTensorFlow.py
 ```
 We need to provide model file path for inference
 
@@ -49,6 +49,9 @@ python3 mnist_8.py
 ## SPML+privacy - Inference
 To run SPML+privacy for inference, we need to provide respective trained model.
 For the ease of our experiments, I have created 8 files, however these can be optimized surely.
+```
+python3 mnist_inference_native.py
+```
 
 ```
 python3 mnist_inference_dp.1.py
