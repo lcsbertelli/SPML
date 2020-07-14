@@ -1,0 +1,161 @@
+
+=====================ITERATION 1==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f79cdf7edd8>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2618539333343506 seconds ---
+trained with DP
+=====================ITERATION 2==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7fdcbf86bdd8>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2635345458984375 seconds ---
+trained with DP
+=====================ITERATION 3==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f25be0aadd8>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2619805335998535 seconds ---
+trained with DP
+=====================ITERATION 4==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f4d2ab4be10>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2617483139038086 seconds ---
+trained with DP
+=====================ITERATION 5==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f410361edd8>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 22us/step
+Accuracy: 34.90000069141388
+Latency --- 0.26523876190185547 seconds ---
+trained with DP
+=====================ITERATION 6==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7fb0b05f5d68>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 22us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2644658088684082 seconds ---
+trained with DP
+=====================ITERATION 7==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7fd5ff570dd8>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.26064085960388184 seconds ---
+trained with DP
+=====================ITERATION 8==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f383bc20e10>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2633383274078369 seconds ---
+trained with DP
+=====================ITERATION 9==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f356ef49358>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.2634103298187256 seconds ---
+trained with DP
+=====================ITERATION 10==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 2.35
+loss= <keras.losses.CategoricalCrossentropy object at 0x7f8e33665dd8>
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 34.90000069141388
+Latency --- 0.26022934913635254 seconds ---
+trained with DP

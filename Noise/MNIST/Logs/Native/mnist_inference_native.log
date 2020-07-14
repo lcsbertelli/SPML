@@ -1,0 +1,151 @@
+
+=====================ITERATION 1==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.2645149230957031 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 2==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.26389217376708984 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 3==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.26232218742370605 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 4==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.26079773902893066 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 5==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.2637794017791748 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 6==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 22us/step
+Accuracy: 94.01999711990356
+Latency --- 0.266202449798584 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 7==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.26219630241394043 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 8==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.2651209831237793 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 9==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.2610039710998535 seconds ---
+Trained with vanilla non-private SGD optimizer
+=====================ITERATION 10==========================
+We are using Tensorflow version 1.15.2
+Keras API version: 2.3.1
+Noise Mutiplier 30
+
+# Evaluate on test data
+
+  500/10000 [>.............................] - ETA: 0s
+ 3500/10000 [=========>....................] - ETA: 0s
+ 6500/10000 [==================>...........] - ETA: 0s
+ 9500/10000 [===========================>..] - ETA: 0s
+10000/10000 [==============================] - 0s 21us/step
+Accuracy: 94.01999711990356
+Latency --- 0.2633781433105469 seconds ---
+Trained with vanilla non-private SGD optimizer
