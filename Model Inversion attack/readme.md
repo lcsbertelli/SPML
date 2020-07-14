@@ -14,7 +14,12 @@ We need ART library to implement the attack and it can be installed as:
 ```
 pip install adversarial-robustness-toolbox
 ```
-
+## Directory Structure
+1. Training - It contains scripts to train the model.
+2. Models - It contains an already trained model.
+3. Attack - It contains scripts to attack the trained model.
+4. Logs - It contains execution or training logs from already trained models.
+5. Images_AfterAttack - It contains pdf images recovered after executing an attack on the respective trained models.
 ## How to run
 The Model inversion attack is a black-box type attack over the machine learning model, hence to demonstrate the attack, we need trained models with good accuracy. In the model directory, various trained models are already kept for the MNIST dataset. The trained model includes model trained with native TensorFlow and privacy library with different epsilon value.
 ```
