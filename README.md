@@ -21,8 +21,9 @@ Tensorflow privacy library can be installed using:
 pip install tensorflow_privacy
 ```
 
-## SPML directory
-In SPML directory three directories are available
-1. mnist - SPML implementation with mnist dataset 
-2. cifar10 - SPML implementation with cifar10 dataset 
-3. rr - SPML implementation with randomized response 
+## Keras
+The current implementation of SPML runs with Keras version=2.3.1. Due to some open issues at TensorFlow library, we have to do some patch work in Keras library. Hence to train models with Privacy library I have included the local copy of Keras version to reduce the system dependencies.
+
+## Recommendation
+Currently privacy library doesn't support TensorFlow 2.x hence SPML also doesn't support 2.x.
+The current recommendation is to use TensorFlow verison 1.15 with local copy of Keras library.
