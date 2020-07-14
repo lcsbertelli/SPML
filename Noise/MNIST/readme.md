@@ -3,6 +3,12 @@
 In this directory, SPML is implemented with the MNIST dataset. 
 We have given implementation of SPML+native TensorFlow and SPML+privacy property
 
+## Directory Structure
+1. Training - It contains scripts to train the model.
+2. Models - It contains an already trained model.
+3. Inference - It contains scripts for inference an already or new trained model.
+4. Logs - It contains execution or training logs from already trained models.
+
 ## SPML+native TensorFlow - Training
 To run SPML+native TensorFlow for training we can use the following command:
 ```
