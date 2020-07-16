@@ -12,71 +12,71 @@ This technique is based on adding randomness to each person's response. The rand
 ## SPML+native TensorFlow - Training
 To run SPML+native TensorFlow for training we can use the following command:
 ```
-python3 mnist_nativeTensorFlow.py
+python3 adultnonrr.py
 ```
 This will give us the trained model which can be feed for the inference later.
 
 ## SPML+native TensorFlow - Inference
 To run SPML+native TensorFlow for inference we can use the following command:
 ```
-python3 mnist_inference_native.py
+python3 adultnonrrinference.py
 ```
 We need to provide a model file path for inference
 
 ## SPML+privacy - Training
-To run SPML+privacy for training, we need to set different epsilon values. In the current repository, we have tested our system with epsilon value as 0.1, 1, 2, 4, 6, and 8.
-For the ease of our experiments, I have created 8 files, however, these can be optimized surely.
+To run SPML+privacy for training, we need to set different epsilon values. In the current repository, we have tested our system with epsilon value as 0.13, 0.53, 1, 2, 3, 4.
+For the ease of our experiments, I have created 6 files, however, these can be optimized surely.
 
 ```
-python3 mnist_.1.py
-```
-
-```
-python3 mnist_1.py
+python3 adultrr_.13.py
 ```
 
 ```
-python3 mnist_2.py
+python3 adultrr_.53.py
 ```
 
 ```
-python3 mnist_4.py
+python3 adultrr_1.py
 ```
 
 ```
-python3 mnist_6.py
+python3 adultrr_2.py
 ```
 
 ```
-python3 mnist_8.py
+python3 adultrr_3.py
+```
+
+```
+python3 adultrr_4.py
 ```
 
 
 ## SPML+privacy - Inference
 To run SPML+privacy for inference, we need to provide a respective trained model.
-For the ease of our experiments, I have created 8 files, however, these can be optimized surely.
+For the ease of our experiments, I have created 6 files, however, these can be optimized surely.
+
 
 ```
-python3 mnist_inference_dp.1.py
-```
-
-```
-python3 mnist_inference_dp2.py
+python3 adultrrinference_.13.py
 ```
 
 ```
-python3 mnist_inference_dp3.py
+python3 adultrrinference_.53.py
 ```
 
 ```
-python3 mnist_inference_dp4.py
+python3 adultrrinference_1.py
 ```
 
 ```
-python3 mnist_inference_dp5.py
+python3 adultrrinference_2.py
 ```
 
 ```
-python3mnist_inference_dp6.py
+python3 adultrrinference_3.py
 ```
 
+```
+python3 adultrrinference_4.py
+```
