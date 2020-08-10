@@ -1,0 +1,9 @@
+[0] Config.pm:304> INFO - This is Biber 2.12
+[0] Config.pm:307> INFO - Logfile is 'diplom.blg'
+[49] biber-darwin:315> INFO - === Wed Mar  4, 2020, 21:27:29
+[76] Biber.pm:371> INFO - Reading 'diplom.bcf'
+[187] Biber.pm:889> INFO - Found 0 citekeys in bib section 0
+[194] Utils.pm:193> WARN - The file 'diplom.bcf' does not contain any citations!
+[202] bbl.pm:636> INFO - Writing 'diplom.bbl' with encoding 'UTF-8'
+[203] bbl.pm:739> INFO - Output to diplom.bbl
+[203] Biber.pm:110> INFO - WARNINGS: 1

@@ -1,0 +1,109 @@
+\documentclass[
+  a4paper,
+  abstract=true,
+  twoside,
+  listof=totoc,
+  numbers=noenddot,
+  bibliography=totoc,
+  BCOR1.5cm,
+  % headsepline,
+  DIV12,
+  %appendixprefix,
+  final,
+  %fontsize=10pt,
+  openany
+] {scrbook}
+
+\iffalse
+% book margin fix: http://www.khirevich.com/latex/page_layout/
+\makeatletter
+\if@twoside % commands below work only for twoside option of \documentclass
+    \newlength{\textblockoffset}
+    \setlength{\textblockoffset}{12mm}
+    \addtolength{\hoffset}{\textblockoffset}
+    \addtolength{\evensidemargin}{-2.0\textblockoffset}
+\fi
+\makeatother
+\fi
+
+
+% You should select either american or british instead of english here:
+\usepackage[american]{babel}
+%\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{appendix}
+\usepackage{listings}
+\usepackage[pdftex,
+citebordercolor={0.75 0.75 1},
+filebordercolor={0.75 0.75 1},
+linkbordercolor={0.75 0.75 1},
+% pagebordercolor={0.75 0.75 1},
+urlbordercolor={0.75 0.75 1},
+pdfborder={0.75 0.75 1},plainpages=false,pdfpagelabels=true]{hyperref}
+\hypersetup{%
+  pdftitle={MSc DSE Thesis: An Integrity Protected File System Layer for Intel SGX},
+  pdfauthor={Prateek Bhatnagar},
+  pdfkeywords={Master of Science, Thesis, Distributed Systems Engineering},
+}
+
+\input{preamble/packages.tex}
+\input{preamble/color.tex}
+\input{preamble/style.tex}
+\input{preamble/newcommands.tex}
+\input{preamble/myacronym.tex}
+\addbibresource{own.bib}
+
+% If you know when you will hand in your thesis, enter the date here.
+\date{10 Aug 2020}
+\newcommand{\printdate}{10 Aug 2020}
+\makeglossaries
+
+\begin{document}
+
+\pagenumbering{Roman}
+
+\input{content/00_title.tex}
+%\cleardoublepage
+\input{content/04_protocol.tex}
+\input{content/01_disclaimer.tex}
+\input{content/02_abstract.tex}
+\input{content/03_ack.tex}
+
+% NOTE: if you selected british or american above, change that here too
+\selectlanguage{american}
+
+\tableofcontents
+%\cleardoublepage
+
+\printglossary[type=\acronymtype,style=long]
+%\cleardoublepage
+
+\listoffigures
+%\cleardoublepage
+
+%\lstlistoflistings
+%\cleardoublepage
+
+\listoftables
+%\cleardoublepage
+
+\pagenumbering{arabic}
+
+\input{content/10_introduction.tex}
+\input{content/20_state.tex}
+\input{content/30_background.tex}
+\input{content/40_design.tex}
+\input{content/50_implementation.tex}
+\input{content/60_evaluation.tex}
+\input{content/70_futurework.tex}
+\input{content/80_conclusion.tex}
+
+\clearpage
+\appendix
+\chapter{Appendix}
+\input{content/90_appendix.tex}
+\clearpage
+\input{content/91_appendix.tex}
+
+\printbibliography
+\end{document}

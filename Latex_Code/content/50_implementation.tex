@@ -1,0 +1,137 @@
+\chapter{Implementation}
+\label{sec:impl}
+In this chapter, we will discuss how we have implemented SPML. We have chosen Intel SGX as TEEs and implemented our system with the help of the SCONE runtime environment due to the advantages it provides like transparency, containerization, easy deployment, etc. This chapter is divided into three sections. The first section discusses the differential privacy implementation details, followed by the implementation \footnote{https://github.com/prbh695a/SPML} details of the training and inference phase.
+\section{Differential privacy}
+In SPML, differential privacy is implemented based on the technique of adding calibrated random noise or randomized response. In practice, adding random noise to achieve differential privacy is a more preferred method than a randomized response. This is because in a randomized response each of the input data points is randomized and hence it changes overall data. However, in SPML we have implemented a randomized response as our contribution to study this effect. First, we will discuss how noise is implemented and then we will discuss implementation details of randomized response.
+
+\subsection{Noise}
+\label{sec:implementationNoise}
+To run differential privacy with noise, Google provided privacy library \cite{11} based on start-of-the-art differential privacy paper for deep learning \cite{4}. This repository provides the \textit{tensorflow\_privacy} library which is developed in Python and can be used to train various machine learning models. This library contains implementation of various differentially private optimizers such as differentially private stochastic gradient descent, adam, adagrad, etc. \textit{tensorflow\_privacy} library can also be used with other python-based frameworks like PyTorch \cite{75}. Whether to train the model with the native optimizer using Google's TensorFlow or differential private optimizer can be easily controlled with the help of a flag as shown below :
+\linebreak
+\begin{lstlisting}[language=Python]
+    if FLAGS.dpsgd:
+        optimizer = DPGradientDescentGaussianOptimizer(
+            l2_norm_clip=FLAGS.l2_norm_clip,
+            noise_multiplier=noise,
+            num_microbatches=FLAGS.microbatches,
+            learning_rate=FLAGS.learning_rate)
+        loss = K.losses.CategoricalCrossentropy(
+            from_logits=True, reduction=tf.losses.Reduction.NONE)
+    else:
+        optimizer = GradientDescentOptimizer(learning_rate=FLAGS.learning_rate)
+        loss = K.losses.CategoricalCrossentropy(from_logits=True, )
+        model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
+\end{lstlisting}
+At Line1, FLAGS.dpsgd=true, then SPML will start training the model using differential private optimizers and loss function otherwise it will use the native TensorFlow functions. As we can see in above piece of code, that just by changing a few lines of code, any existing native machine learning algorithm can be made differentially private. Once we have obtained differential private model, we want to calculate privacy budget or privacy loss which is measured in terms of $\epsilon$.\newline
+\newline
+\textbf{Privacy Budget}
+Privacy budget can be measured in terms of $\epsilon$ and $\delta$ where $\epsilon$ is the probability measure of how much privacy is being leaked and $\delta$ is a small probability of failing. But to calculate ($\epsilon$,$\delta$)-\text{differential privacy} with Gaussian and composition rule, the current method in equation ~\ref{eq:epsGaussian} is not an accurate fit. The \textit{tensorflow\_privacy} library recommends to use Rényi Differential Privacy (RDP) \cite{23}. Hence, we have used Rényi divergence to measure differential privacy which provides Rényi Differential Privacy (RDP). 
+
+RDP enables us to calculate privacy when sampling distribution along with Gaussian noise is used like in our case. Tensorflow privacy library \cite{11} provides a function \textit{computeEpsilon()} to calculate epsilon based on hyperparameters such as dataset size, batch size, epochs, delta, and noise multiplier as explained below.
+\begin{itemize}
+    \item \textbf{Dataset size}: This is the size of the database or dataset.
+    \vspace{-0.3cm}\item \textbf{Batch size}: Number of a random sample from the dataset which will be picked up during the training of model in each epoch.
+    \vspace{-0.3cm}\item \textbf{Delta}: The $\delta$ should be set smaller then reciprocal of training data size.
+    \vspace{-0.3cm}\item \textbf{Epoch}: Number of training iterations to train the model.
+    \vspace{-0.3cm}\item \textbf{q} : It is the sampling ratio of number of samples in one step over total training samples. 
+    \vspace{-0.3cm}\item \textbf{steps} : This is calculated as (Epoch * Dataset size) / (Batch size)
+\end{itemize}
+
+The function \textit{computeEpsilon()} as shown below can also be further integrated with any type of machine learning or deep learning mechanisms very easily. The advantage of this function is that it can be run independently of the training procedure and privacy loss can be obtained quickly and accurately at any point without training the model. Its a simple python script which doesn't have any dependency on any training or model parameters. 
+\linebreak 
+\begin{lstlisting}[language=Python]
+def computeEpsilon(steps,noise):
+  if noise == 0.0:
+    return float('inf')
+  orders = [1 + x / 10. for x in range(1, 100)] + list(range(12, 64))
+  sampling_probability = FLAGS.batch_size / FLAGS.size
+  rdp = compute_rdp(q=sampling_probability,
+                    noise_multiplier=noise,
+                    steps=steps,
+                    orders=orders)
+  return get_privacy_spent(orders, rdp, target_delta=FLAGS.delta)[0]
+\end{lstlisting}
+\subsection{Randomized response}
+\label{sec:implementationRR}
+In our system SPML, we have implemented the randomized response technique proposed by Warner \cite{14}. This technique is based on adding randomness to each person's response. The randomness is added by flipping a coin. For example, if simple questions are asked which can be answered in yes/no, then to answer these questions (1) A coined is flipped two times (2) If its head question is honestly answered (3) If its tail, then second coin flip comes into play and yes is answered for the head and no is answered for the tail. This provides plausible deniability because it cannot be traced if the answer is honestly answered or its due to the coin flip. The advantage of using this type of noise is that it is easy to implement but the major disadvantage is that, to add randomization each dataset must be studied and re-engineered/pre-processed to randomize it, which sometimes changes the overall dataset.
+\linebreak
+\begin{lstlisting}[language=Python]
+def rr(column,p,q):
+    for i in range(column.count()):
+        flip1 = random.random() < p
+        if flip1:
+            continue
+        else:
+            flip2 = random.random() < q
+            if flip2:
+                column[i] = 1
+            else:
+                column[i] = 0
+\end{lstlisting}
+We have implemented our randomized response in a function \textit{rr}  based on simple coin flips. \textit{column} is the column in the dataset which will be randomized using this technique. \textit{p} and \textit{q} are called bias, which are the probabilities of getting head. The first coin is flipped with probability p and second coin with probability q. These p and q are used to calculate private budget for randomized response.\linebreak
+
+\textbf{Privacy Budget}
+To calculate epsilon and privacy loss, equations suggested in \cite{18} are used. The code for calculating the privacy budget is very simple as shown below. This function can also be used independently of any model parameters without starting the training process. In both the mechanisms, we can calculate the different parameters values to achieve the respective $\epsilon$.
+\linebreak
+\begin{lstlisting}[language=Python]
+def calculateEps(p,q):
+    numerator=(p+(1-p)*q)
+    denominator=(1-p)*q
+    eps=math.log(numerator/denominator)
+    return eps
+\end{lstlisting}
+Once the user has decided which differential privacy technique to apply to activate privacy property i.e noise or randomized response, SPML can begin training our model depending upon the respective activated technique. 
+
+\section{Training Phase}
+For implementing the SPML system, there are many choices available to choose among the different machine learning frameworks such as Pytorch \cite{75}, Tensorflow \cite{24}, Scikit-learn library \cite{63}, etc. In SPML, Google's opensource framework TensorFlow is used to train models for machine/deep learning. It is known for its flexibility, wide range of libraries and community support to develop machine/deep learning applications. 
+
+Tensorflow uses Python APIs for creating trained models. However, there are two known overheads when we use Python with SCONE. First is, python needs system call (dynamic library open (dlopen)) for import commands and this puts an additional overhead during integration with SCONE. The system call is responsible for loading libraries dynamically at run time in a program and is disabled by default. Secondly, python also requires setting large heap and stack sizes which degrades performance a little bit. To overcome these overheads, SCONE environment needs to be configured to allow the dlopen system call, heap, and stack size must be tuned to have a smooth run of an application.
+
+\subsection{Training computation}
+Training computation involves training the model with a native TensorFlow optimizer or differentially private optimizer. If we choose a randomized response then training will take place using native TensorFlow optimizers else differentially private optimizer. Training with differential private optimizer requires some additional parameters as compared to the existing hyperparameters as discussed below:
+\begin{itemize}
+    \item \textbf{learningRate}: The learning rate for the optimizer is the rate at which model learns in each iteration just like native TensorFlow. Since with differential privacy, the updates will be noisy hence this should be set as low for better training.
+    \vspace{-0.3cm} \item \textbf{numMicrobatches}: The input data is usually split into batches in the native TensorFlow implementations, however, the differentially private optimizers requires the current batch to be split further into several micro-batches. Increasing the micro-batch tends to increase the utility but can slow down the training process hence a trade-off is required to make between utility and time taken for training. The batch size should be divisible by numMicrobatches else it results in an error.
+    \vspace{-0.3cm} \item \textbf{l2NormClip}: This is the clip of the overall gradient of each micro-batch in a way such that the L2 norm of the gradient is maximum. This is set between .5 to 1.0.
+    \vspace{-0.3cm} \item \textbf{noiseMultiplier}: It controls the noise amount to be added. Adding more noise can result in better privacy but will lower the accuracy. Here also a tradeoff between accuracy and privacy is required.
+\end{itemize}
+
+The training model, loss, and optimizer functions have been defined using python APIs in either case i.e native TensorFlow or differential privacy library. The main difference is how the model is trained using optimizer which can be native TensorFlow or from the privacy library. We will discuss details about how optimizers are made differentially private. In our discussion, we will be using Stochastic Gradient Descent(SGD) algorithm but this is applied in general to all other optimizers also. First, we will look into native SGD to understand how it works, then we will discuss the modification needed to make this native SGD into differentially private SGD.
+\begin{itemize}
+\item \textbf{Stochastic Gradient Descent}
+Stochastic Gradient Descent (SGD) is an iterative algorithm. In this algorithm, random sample is picked from the training set, how many samples to be picked is decided by the batch size and they form a batch of data for every iteration. The loss is also known as an error and is computed between prediction done by the model and the labels, which undergoes a differentiation with parameters of the model. The resultant derivatives also known as gradients give an idea of how much each model parameters should be updated to reduce the error or loss to predict the correct training label. The decent comes from the recomputation of gradients and applying them to recalculate model's parameter. This process is repeated until the model is performing up to satisfaction. We summarized this process in steps as:
+\begin{enumerate}
+\item{A batch is picked up from the training points (x,y),where x stands for input and y stands for a label.}
+\vspace{-0.3cm}\item{The loss function is defined as $L(theta, x, y)$ and is computed between the prediction of model f\_theta(x) and the label y, where theta stands for model's parameters.}
+\vspace{-0.3cm}\item{Then, the gradient of this loss function is calculated using theta.}
+\vspace{-0.3cm}\item{These gradients are then multiplied by learning rate and the product is applied to update theta.}
+\end{enumerate}
+
+\item \textbf{Differentially Private - Stochastic Gradient Descent}
+Now we have looked and understood the basic working of SGD. To make SGD differentially private, two modifications are required. First, each gradient's sensitivity should be bounded. This is achieved by applying some limit on the training sample belonging to batch(es) so that they don't influence resultant gradient computation. It can be achieved within step3 and step4 by clipping gradient for every training point. Secondly, the algorithm behavior is randomized so that it is not possible to detect if a point was in the training set or not. To achieve this, random noise is sampled and added to the gradients which are clipped above. The final algorithm after modification will look like as follow:
+
+\begin{enumerate}
+\item{A batch is picked up from the training points (x,y), where x stands for input and y stands for a label.}
+\vspace{-0.3cm}\item{Loss function is mathematically defined as $L(theta, x, y)$ and is computed between the prediction of model $f\_theta(x)$ and label y, theta stands for model's parameters.}
+\vspace{-0.3cm}\item{Gradient of this loss function is calculated using theta.}
+\vspace{-0.3cm}\item{These gradients are clipped over the batch so that each gradient is in Euclidean norm.}
+\vspace{-0.3cm}\item{Random noise is added to each of these clipped gradients.}
+\vspace{-0.3cm}\item{These noised and clipped gradients are then multiplied by learning rate and product is applied to update theta.}
+\end{enumerate}
+
+The algorithms which are either native TensorFlow or differentially private optimizers are called via python APIs as explained in section ~\ref{sec:implementationNoise}. Depending upon the chosen differentially private technique, a trained model will be obtained which will be privacy-preserving and will be encrypted via SCONE runtime environment and save for future use.
+\end{itemize}
+
+\section{Inference Phase}
+Once the model is trained, it is ready to do prediction or classification for which it is trained. The trained model will try to co-relate the inputs to the best possible outcome to produce the output. The inference is required on some real-world data. The real-world data is the data on which model is not trained and hence is unknown to the model. Based on how accurate the inference is made for real-world data, the model accuracy can be estimated. Both the input data and the trained model are kept in an encrypted form in file-system to protect their confidentiality and integrity. When inference is required, the data and model will be run with a SCONE runtime environment which will transparently decrypt them and run computation over them within an enclave. \linebreak
+
+\begin{lstlisting}[language=Python]
+    modelName="Cifarmodel.h5"
+    model = load_model("cifarmodelshwno/"+modelName)
+
+    model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
+    results = model.evaluate(test_data, test_labels, batch_size=FLAGS.batch_size)
+\end{lstlisting}
+The TensorFlow provides an API to load the saved model from the disk as explained in line1. We have to compile the model once again before doing inference. Line5 is evaluating a trained model against real-world data.
+
+ The inference computation like training computation is also done inside the enclave using TensorFlow APIs. The inference is also known as the evaluation phase because this phase will determine how accurately the model can inference things and if this model can be used for real-time business cases. If the results of the inference phase are not satisfactory it means the model should be trained with more training data. Inference doesn't require setting large heap and stack size, unlike the training phase. Once inference is done, real-world data is not kept in memory. The result of the inference is also kept in encrypted form on a filesystem outside the SCONE.

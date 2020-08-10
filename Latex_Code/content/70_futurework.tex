@@ -1,0 +1,15 @@
+\chapter{Future work}
+\label{sec:fw}
+In this chapter, we will focus on future work and improvements that can be done over our existing system. SPML system is a prototype that shows we can achieve privacy, confidentiality, and integrity on any native machine/deep learning system. To make our system production-ready, we still need to put some more efforts like we have to integrate more modules of SCONE, add a generalized random response mechanism, explore Laplace noise. We want to discuss a few of the future work and improvements as follows:
+
+\section{SCONE CAS}
+In the current prototype, we have used the system without the SCONE CAS \cite{78}  module. When deploying in production, SCONE CAS (Configuration and Attestation Service) is used for service attestation and policy management. It is the main module that can attest to all the enclaves in the network. But due to time limitations, we have focused only on the integral parts of the system. We have concentrated on making a generic machine learning framework SPML, that will provide privacy, confidentiality, and integrity to any existing native machine learning application. Hence, integration with SCONE CAS is needed to make the SPML system production-ready.
+
+\section{Generalized randomized response}
+In the current SPML prototype, we have shown that a randomized response technique, based on coin flips, can also be used to add privacy to the system. There are many other ways to implement randomized responses such as proposed in Google's RAPPOR paper \cite{5} or algorithms suggested by Apple \cite{75} such as Private Count Mean Sketch, Private Hadamard Count Mean Sketch, Private Sequence Fragment Puzzle. As an enhancement, these techniques can also be studied with our system SPML.
+
+\section{Laplace noise}
+In the current SPML prototype, we have used the DP library based on paper \cite{4} and implemented privacy property with Gaussian noise. The privacy library also provides an option to add Laplace noise based on 'Bolt-on Differential Privacy' \cite{79}. In practice, Laplace's noise is more practical than Gaussian noise. Hence, we can evaluate our system SPML with Laplace noise to study its effects in the future.
+
+\section{Implementation with other frameworks}
+In the current SPML, we have used Google's open-source framework TensorFlow \cite{24}. As an enhancement, we can make SPML more generic by implementing using Pytorch \cite{75} also. Pytorch is also an emerging and promising open-source framework used industry-wide.

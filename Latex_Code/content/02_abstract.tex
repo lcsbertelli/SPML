@@ -1,0 +1,17 @@
+% -*- Mode: Latex -*-
+
+\selectlanguage{american}
+
+\section*{}\thispagestyle{empty}
+%\vspace{2.5cm}
+\section*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+% \section*{\thispagestyle{empty}Abstract}
+Machine learning techniques have been popular these days and are extensively used in many AI applications. These services are deployed in the public cloud for high performance, scalability, and availability purposes. However, security and privacy are major concerns for these systems when deployed in an untrusted public environment such as the public cloud. By security it means protecting the confidentiality and integrity of data and systems. One of the most emerging and promising approaches to protect the confidentiality and integrity of the data and system in an untrusted environment is to use the Trusted Execution Environment (TEEs) \cite{59}. 
+
+The privacy means no private information about an individual should be leaked from the data. However, TEEs still cannot ensure the privacy of an individual. An adversary can still fire malicious queries on the trained model and private information can be leaked. Hence, some additional mechanisms and techniques are needed to preserve the privacy of an individual. One such popular and efficient technique to preserve privacy in a machine learning system is to use differential privacy \cite{3}.  It aims to learn desired information about a group while learning nothing about an individual in that group. 
+
+We developed a system SPML that marriage privacy together with security (confidentiality and integrity). We have used TEEs to address the confidentiality and integrity concerns. Privacy is addressed using differential privacy. We evaluated SPML against MNIST \cite{12} and CIFAR \cite{13} dataset in the evaluation chapter ~\ref{sec:eval}. We learned that at stronger privacy bounds the accuracy of SPML decreases and while at weaker privacy bounds the accuracy is within an acceptable range. It is concluded that there is always a trade-off we have to make between accuracy and privacy level. Secondly, training the model takes a longer time as compare to inference, hence inference can be used in practice. However, we have discussed some advanced features also which can help to reduce training time taken to train the model.
+
+Our system SPML, not only makes any native existing machine/deep learning system privacy-preserving but it also provides confidentiality and integrity. SPML is not only easy to use for new developments but any existing native machine learning system can use our system SPML framework and with minimum code changes privacy and security properties can be added in these native machine learning systems.
+\clearpage
